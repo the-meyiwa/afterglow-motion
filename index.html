@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#08090d"><title>AFTERGLOW — A living interface</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08090d;--fg:#f3f0ec;--muted:#8b8a91;--line:rgba(255,255,255,.13);--orange:#ff784b;--pink:#ff4c91;--blue:#7c78ff;--mx:50%;--my:50%}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Manrope,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:5;opacity:.11;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.23'/%3E%3C/svg%3E")}
+a{color:inherit;text-decoration:none}.mono{font:11px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.nav{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 6vw;border-bottom:1px solid var(--line);position:relative;z-index:6}
+.brand{display:flex;gap:12px;align-items:center;font-weight:800;letter-spacing:.04em}
+.brand-mark{width:24px;height:24px;border-radius:50%;background:conic-gradient(from 220deg,var(--orange),var(--pink),var(--blue),var(--orange));box-shadow:0 0 25px #ff5b6c77}
+.nav-right{display:flex;align-items:center;gap:28px;color:#c6c3c7}
+.nav-cta{border:1px solid var(--line);padding:11px 17px;border-radius:3px;transition:.3s}
+.nav-cta:hover{background:var(--fg);color:var(--bg);transform:translateY(-2px)}
+.hero{min-height:calc(100svh - 82px);display:grid;grid-template-columns:1.08fr .92fr;align-items:center;padding:8vh 9vw 10vh;position:relative;isolation:isolate}
+.hero:before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(700px circle at var(--mx) var(--my),rgba(106,80,190,.15),transparent 65%),radial-gradient(400px circle at 78% 62%,rgba(255,93,103,.10),transparent 65%)}
+.eyebrow{color:#b8a9ff;display:flex;align-items:center;gap:11px;margin-bottom:30px}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:#b3a0ff;box-shadow:0 0 14px #a491ff;animation:pulse 2s infinite}
+.title{font-size:clamp(70px,10.2vw,154px);letter-spacing:-.09em;line-height:.83;margin:0 0 35px;font-weight:600}
+.title .line{display:block;overflow:hidden;padding:0 .04em .12em;margin-left:-.04em}
+.title .line span{display:block;transform:translateY(115%);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+.title .line:nth-child(2) span{animation-delay:.13s}
+.title .gradient{background:linear-gradient(100deg,#fff 3%,#e3c9ff 38%,#ff9070 78%,#ffe3a7);background-size:200%;background-clip:text;color:transparent;animation:rise .9s .13s cubic-bezier(.2,.8,.2,1) forwards,shift 7s 1.2s ease-in-out infinite alternate}
+.intro{font-size:17px;line-height:1.75;color:#a3a0a8;max-width:445px;opacity:0;animation:fade .8s .55s forwards}
+.hero-actions{display:flex;gap:14px;margin-top:34px;opacity:0;animation:fade .8s .72s forwards}
+.button{padding:15px 20px;border:1px solid var(--line);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;display:inline-flex;align-items:center;gap:16px;transition:.3s}
+.button.primary{background:#f3f0ec;color:#111116;border-color:#f3f0ec}
+.button:hover{transform:translateY(-3px);box-shadow:0 14px 40px #0008}
+.button.primary:hover{background:#ffc49e;border-color:#ffc49e}
+.arrow{font-size:18px;line-height:10px}
+.hero-art{height:min(70vh,650px);min-height:430px;position:relative;display:grid;place-items:center;perspective:1000px;opacity:0;animation:fade 1s .35s forwards}
+.orbit{position:absolute;width:84%;aspect-ratio:1;border:1px solid rgba(255,255,255,.12);border-radius:50%;animation:orbit 28s linear infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.08);border-radius:50%;inset:9%}
+.orbit:after{inset:20%}
+.orbit.two{width:65%;transform:rotateX(66deg) rotateZ(-22deg);animation:orbit2 19s linear infinite;border-color:#ffa18b4d}
+.orbit.three{width:95%;transform:rotateY(68deg) rotateZ(10deg);animation:orbit3 30s linear infinite;border-color:#a18dff55}
+.core-wrap{width:52%;aspect-ratio:1;position:relative;transform-style:preserve-3d;animation:float 6s ease-in-out infinite;transition:transform .15s ease-out}
+.core{position:absolute;inset:7%;border-radius:42% 58% 53% 47% / 46% 39% 61% 54%;background:radial-gradient(ellipse at 30% 22%,#ffd7b3 0,#ff8d6b 13%,#fa4e80 32%,#8f55cb 58%,#21214d 80%);filter:drop-shadow(0 0 65px #ec529b57);animation:morph 10s ease-in-out infinite alternate,spin 28s linear infinite}
+.core:before{content:"";position:absolute;inset:7%;border-radius:inherit;background:linear-gradient(135deg,#ffffff8a,transparent 28% 68%,#21164b99);mix-blend-mode:screen}
+.core:after{content:"";position:absolute;width:32%;height:19%;top:18%;left:21%;border-radius:50%;background:#fff9;filter:blur(22px);transform:rotate(-35deg)}
+.orb{position:absolute;width:13px;height:13px;border-radius:50%;background:#ffb08f;box-shadow:0 0 22px 7px #ff847055;top:22%;left:22%;animation:orb 9s linear infinite}
+.orb.b{width:8px;height:8px;top:auto;left:auto;right:17%;bottom:28%;background:#b7a3ff;box-shadow:0 0 20px 7px #9084ff66;animation-duration:12s;animation-direction:reverse}
+.art-label{position:absolute;right:2%;bottom:12%;color:#a39fa9;line-height:1.8}
+.art-label b{color:#f1edf1;font-weight:500}
+.art-index{position:absolute;top:6%;left:2%;color:#a39fa9}
+.scroll-note{position:absolute;bottom:34px;left:9vw;display:flex;gap:14px;align-items:center;color:#77747e}
+.scroll-note:before{content:"";height:1px;width:42px;background:#77747e}
+.section{padding:140px 9vw;border-top:1px solid var(--line);position:relative}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:70px}
+.section-title{font-size:clamp(42px,6vw,82px);line-height:.95;letter-spacing:-.07em;margin:14px 0 0;font-weight:500}
+.section-copy{max-width:260px;color:var(--muted);line-height:1.7;font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}
+.card{min-height:310px;padding:32px;position:relative;overflow:hidden;border-right:1px solid var(--line);transition:background .4s}
+.card:last-child{border:0}.card:hover{background:#111118}
+.card-no{color:#888;font:11px 'DM Mono',monospace}
+.card-icon{height:100px;display:grid;place-items:center;margin:25px 0}
+.icon-ring{width:58px;height:58px;border:1px solid #ff806e;border-radius:50%;position:relative;transition:transform .8s}
+.card:hover .icon-ring{transform:rotate(125deg) scale(1.15)}
+.icon-ring:before,.icon-ring:after{content:"";position:absolute;inset:10px;border:1px solid #b693ff;border-radius:50%;transform:rotateX(60deg)}
+.icon-ring:after{inset:-7px;transform:rotateY(68deg);border-color:#fff6}
+.card h3{font-size:18px;margin:0 0 10px}
+.card p{font-size:13px;line-height:1.7;color:var(--muted);max-width:300px}
+.manifesto{padding:160px 14vw;text-align:center;background:radial-gradient(ellipse at 50% 50%,#24202d 0,transparent 65%);border-block:1px solid var(--line)}
+.manifesto blockquote{font-size:clamp(34px,5.5vw,72px);letter-spacing:-.065em;line-height:1.12;margin:38px auto;max-width:1050px}
+.manifesto blockquote span{color:#77737d;transition:color .8s}
+.manifesto blockquote span.lit{color:#f2e9ed}
+.manifesto .mono{color:#b3a0ff}
+.footer{padding:35px 6vw;display:flex;justify-content:space-between;color:#8e8b93}
+.reveal{opacity:0;transform:translateY(35px);transition:opacity .9s,transform .9s}
+.reveal.in{opacity:1;transform:none}
+.cursor-glow{position:fixed;z-index:-1;width:320px;height:320px;pointer-events:none;border-radius:50%;background:radial-gradient(circle,#8b4eff13,transparent 70%);transform:translate(-50%,-50%)}
+@keyframes rise{to{transform:translateY(0)}}
+@keyframes fade{to{opacity:1}}
+@keyframes pulse{50%{box-shadow:0 0 2px #a491ff;opacity:.6}}
+@keyframes float{0%,100%{transform:translateY(-10px) rotateX(-5deg) rotateY(8deg)}50%{transform:translateY(12px) rotateX(5deg) rotateY(-7deg)}}
+@keyframes morph{0%{border-radius:42% 58% 53% 47% / 46% 39% 61% 54%}50%{border-radius:56% 44% 38% 62% / 57% 57% 43% 43%}100%{border-radius:38% 62% 58% 42% / 40% 55% 45% 60%}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes orbit2{to{transform:rotateX(66deg) rotateZ(338deg)}}
+@keyframes orbit3{to{transform:rotateY(68deg) rotateZ(370deg)}}
+@keyframes spin{to{filter:hue-rotate(18deg) drop-shadow(0 0 65px #ec529b57)}}
+@keyframes shift{to{background-position:100% 50%}}
+@keyframes orb{to{transform:rotate(360deg) translateX(126px) rotate(-360deg)}}
+@media(max-width:800px){.nav{height:68px;padding-inline:6vw}.nav-right>a:not(.nav-cta){display:none}
+.hero{display:flex;flex-direction:column;align-items:flex-start;padding:100px 7vw 85px;min-height:auto}
+.title{font-size:clamp(76px,18vw,130px)}
+.hero-art{width:100%;height:95vw;min-height:360px;margin-top:35px}
+.scroll-note{left:7vw}.section{padding:95px 7vw}
+.section-head{display:block;margin-bottom:40px}.section-copy{margin-top:25px}
+.cards{grid-template-columns:1fr}.card{min-height:260px;border-right:0;border-bottom:1px solid var(--line)}
+.card:last-child{border-bottom:0}.card-icon{height:70px;margin:16px}
+.manifesto{padding:105px 7vw}.footer{padding:28px 7vw;font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style></head><body>
+<div class="cursor-glow" id="glow"></div>
+<nav class="nav"><a class="brand" href="#top"><span class="brand-mark"></span><span class="mono">AFTERGLOW</span></a>
+<div class="nav-right mono"><a href="#about">The feeling</a><a href="#principles">Principles</a><a class="nav-cta" href="#about">Enter the light ↗</a></div></nav>
+<main id="top"><section class="hero">
+<div class="hero-copy"><div class="eyebrow mono"><i></i> A little beyond the ordinary</div>
+<h1 class="title"><span class="line"><span>Make</span></span><span class="line"><span class="gradient">wonder.</span></span></h1>
+<p class="intro">A study in light, motion, and the brief sensation that a screen might actually feel like something.</p>
+<div class="hero-actions"><a class="button primary" href="#about">Explore the feeling <span class="arrow">↗</span></a><a class="button" href="#principles">See what moves <span class="arrow">↓</span></a></div></div>
+<div class="hero-art" id="art"><div class="art-index mono">FIG. 01 / LUMEN STUDY</div>
+<div class="orbit"></div><div class="orbit two"></div><div class="orbit three"></div>
+<div class="core-wrap" id="core"><div class="core"></div></div>
+<div class="orb"></div><div class="orb b"></div>
+<div class="art-label mono">A living object<br><b>01:∞ / always becoming</b></div></div>
+<div class="scroll-note mono">Scroll slowly</div></section>
+<section class="section" id="principles"><div class="section-head reveal"><div><div class="mono" style="color:#b3a0ff">A different kind of interface</div>
+<h2 class="section-title">Less noise.<br>More feeling.</h2></div>
+<p class="section-copy">Tiny details have a way of becoming the whole experience. These are a few of ours.</p></div>
+<div class="cards"><article class="card reveal"><div class="card-no">01 — DEPTH</div><div class="card-icon"><div class="icon-ring"></div></div>
+<h3>Space with a pulse</h3><p>Light shifts with your attention. The atmosphere isn't decoration; it's a response.</p></article>
+<article class="card reveal"><div class="card-no">02 — MOTION</div><div class="card-icon"><div class="icon-ring" style="border-color:#a792ff"></div></div>
+<h3>Never quite still</h3><p>Organic movement gives the eye somewhere to wander without asking for permission.</p></article>
+<article class="card reveal"><div class="card-no">03 — RESTRAINT</div><div class="card-icon"><div class="icon-ring" style="border-color:#ffb395"></div></div>
+<h3>Room to breathe</h3><p>Contrast does the talking. The interface knows when to shut up. A rare skill.</p></article></div></section>
+<section class="manifesto" id="about"><div class="mono reveal">A small reminder</div>
+<blockquote class="reveal" id="quote">“The best interfaces don’t just show you something. <span>They make you feel the moment you found it.”</span></blockquote>
+<div class="mono reveal" style="color:#85818b">Designed to be felt, not explained.</div></section></main>
+<footer class="footer mono"><span>AFTERGLOW — AN EXPERIMENT IN PRESENCE</span><span>MADE OF LIGHT & A LITTLE CODE</span></footer>
+<script>
+var root=document.documentElement,glow=document.getElementById('glow'),art=document.getElementById('art'),core=document.getElementById('core'),pending=0;
+window.addEventListener('pointermove',function(e){
+ if(pending)return;
+ pending=requestAnimationFrame(function(){
+  var x=e.clientX,y=e.clientY;
+  root.style.setProperty('--mx',x+'px');root.style.setProperty('--my',y+'px');
+  glow.style.left=x+'px';glow.style.top=y+'px';
+  var r=art.getBoundingClientRect();
+  if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom){
+   var rx=(y-r.top)/r.height-.5,ry=(x-r.left)/r.width-.5;
+   core.style.transform='rotateX('+(-rx*22)+'deg) rotateY('+(ry*26)+'deg) translateZ(10px)';
+  } else { core.style.transform=''; }
+  pending=0;
+ });
+});
+var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+var words=document.querySelector('#quote span');
+var qio=new IntersectionObserver(function(entries){if(entries[0].isIntersecting){words.classList.add('lit');qio.disconnect();}},{threshold:.55});
+qio.observe(document.getElementById('quote'));
+</script></body></html>
